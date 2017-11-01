@@ -35,7 +35,9 @@ module Pilot
       end
 
       UI.message("If you want to skip waiting for the processing to be finished, use the `skip_waiting_for_build_processing` option")
-      latest_build = FastlaneCore::BuildWatcher.wait_for_build_processing_to_be_complete(app_id: app.apple_id, platform: platform, poll_interval: config[:wait_processing_interval])
+      app_version = FastlaneCore::IpaFileAnalyser.fetch_app_version(config[:ipa])
+      app_build = FastlaneCore::IpaFileAnalyser.fetch_app_build(config[:ipa])
+      latest_build = FastlaneCore::BuildWatcher.wait_for_build_processing_to_be_complete(app_id: app.apple_id, platform: platform, train_version: app_version, build_version: app_build, poll_interval: config[:wait_processing_interval])
 
       distribute(options, build: latest_build)
     end
